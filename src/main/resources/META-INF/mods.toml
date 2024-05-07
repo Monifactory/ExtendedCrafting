@@ -3,17 +3,17 @@ loaderVersion="[47,)"
 license="MIT"
 
 [[mods]]
-    issueTrackerURL="https://github.com/BlakeBr0/ExtendedCrafting/issues"
+    issueTrackerURL="https://github.com/WithersChat/ExtendedCrafting-1.20-unofficial/issues"
     modId="extendedcrafting"
     version="${file.jarVersion}"
-    displayName="Extended Crafting"
+    displayName="Extended Crafting: Monifactory Edition"
     # updateJSONURL="http://myurl.me/"
-    displayURL="https://blakesmods.com/extended-crafting"
+    # displayURL="https://blakesmods.com/extended-crafting"
     # logoFile="examplemod.png"
-    authors="BlakeBr0"
-    credits="SpitefulFox"
+    authors="WithersChat, BlakeBr0 (original author)"
+    credits="BlakeBr0 (original author), SpitefulFox"
     description='''
-    Adds some new ways to craft items, as well as extra crafting items and utilities.
+    Adds some new ways to craft items, as well as extra crafting items and utilities. Now with even more tables!
     '''
 
     [[dependencies.extendedcrafting]]
