@@ -33,6 +33,11 @@ public final class ModConfigs {
 	public static final ForgeConfigSpec.IntValue AUTO_TABLE_POWER_CAPACITY;
 	public static final ForgeConfigSpec.IntValue AUTO_TABLE_POWER_RATE;
 	public static final ForgeConfigSpec.IntValue AUTO_TABLE_INSERT_POWER_RATE;
+	public static final ForgeConfigSpec.IntValue AUTO_TABLE_BASIC_CRAFTING_TIME;
+	public static final ForgeConfigSpec.IntValue AUTO_TABLE_ADVANCED_CRAFTING_TIME;
+	public static final ForgeConfigSpec.IntValue AUTO_TABLE_ELITE_CRAFTING_TIME;
+	public static final ForgeConfigSpec.IntValue AUTO_TABLE_ULTIMATE_CRAFTING_TIME;
+	public static final ForgeConfigSpec.IntValue AUTO_TABLE_EPIC_CRAFTING_TIME;
 
 	public static final ForgeConfigSpec.BooleanValue ENABLE_COMPRESSOR;
 	public static final ForgeConfigSpec.IntValue COMPRESSOR_POWER_CAPACITY;
@@ -104,6 +109,21 @@ public final class ModConfigs {
 		AUTO_TABLE_INSERT_POWER_RATE = common
 				.comment("How much FE the Auto Crafting Tables should use when auto inserting items.")
 				.defineInRange("autoTableInsertPowerRate", 100, 0, Integer.MAX_VALUE);
+		AUTO_TABLE_BASIC_CRAFTING_TIME = common
+				.comment("How many ticks the Basic Auto Table takes to craft")
+				.defineInRange("autoTableBasicCraftTime", 8, 1, Integer.MAX_VALUE);
+		AUTO_TABLE_ADVANCED_CRAFTING_TIME = common
+				.comment("How many ticks the Advanced Auto Table takes to craft")
+				.defineInRange("autoTableAdvancedCraftTime", 8, 1, Integer.MAX_VALUE);
+		AUTO_TABLE_ELITE_CRAFTING_TIME = common
+				.comment("How many ticks the Elite Auto Table takes to craft")
+				.defineInRange("autoTableEliteCraftTime", 8, 1, Integer.MAX_VALUE);
+		AUTO_TABLE_ULTIMATE_CRAFTING_TIME = common
+				.comment("How many ticks the Ultimate Auto Table takes to craft")
+				.defineInRange("autoTableUltimateCraftTime", 8, 1, Integer.MAX_VALUE);
+		AUTO_TABLE_EPIC_CRAFTING_TIME = common
+				.comment("How many ticks the Epic Auto Table takes to craft")
+				.defineInRange("autoTableEpicCraftTime", 8, 1, Integer.MAX_VALUE);
 		common.pop();
 
 		common.comment("Settings for the Quantum Compressor.").push("Quantum Compression");
