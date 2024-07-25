@@ -88,7 +88,7 @@ public final class JeiCompat implements IModPlugin {
 				var recipes = Stream.of(1, 2, 3, 4, 5).collect(Collectors.toMap(tier -> tier, tier ->
 					manager.byType(ModRecipeTypes.TABLE.get()).values()
 						.stream()
-						.filter(recipe -> recipe.hasRequiredTier() ? tier == recipe.getTier() : tier >= recipe.getTier())
+						.filter(recipe -> tier == recipe.getTier())
 						.toList()
 				));
 

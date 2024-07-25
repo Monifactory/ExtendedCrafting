@@ -45,11 +45,23 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		this.tier = tier;
 	}
 
+	/**
+	 * Returns the recipe's output
+	 * @param access No idea what that does
+	 * @return the output item
+	 */
 	@Override
 	public ItemStack getResultItem(RegistryAccess access) {
 		return this.output;
 	}
 
+	/**
+	 * I think this method and the next one make a copy of the recipe output as an ItemStack.
+	 * Not really important here.
+	 * @param inventory The inventory containing the inputs
+	 * @param access No idea what that does
+	 * @return A copy of the recipe output as an ItemStack
+	 */
 	@Override
 	public ItemStack assemble(IItemHandler inventory, RegistryAccess access) {
 		return this.output.copy();
@@ -60,6 +72,11 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		return this.output.copy();
 	}
 
+	/**
+	 * Checks if the grid matches the recipe
+	 * @param inventory The table's inventory
+	 * @return whether there is a match
+	 */
 	@Override
 	public boolean matches(IItemHandler inventory) {
 		if (this.tier != 0 && this.tier != this.getTierFromGridSize(inventory))
@@ -86,31 +103,58 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		return this.matches(new InvWrapper(inv));
 	}
 
+	/**
+	 * Returns a list of inputs
+	 * @return a list of inputs
+	 */
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
 		return this.inputs;
 	}
 
+	/**
+	 * Returns recipe ID
+	 * @return recipe ID
+	 */
 	@Override
 	public ResourceLocation getId() {
 		return this.recipeId;
 	}
 
+	/**
+	 * Returns the type's recipe serializer
+	 * @return serializer
+	 */
 	@Override
 	public RecipeSerializer<?> getSerializer() {
 		return ModRecipeSerializers.SHAPED_TABLE.get();
 	}
 
+	/**
+	 * Returns the TABLE recipe type
+	 * @return the type
+	 */
 	@Override
 	public RecipeType<?> getType() {
 		return ModRecipeTypes.TABLE.get();
 	}
 
+	/**
+	 * Checks whether the recipe fits within a certain frame
+	 * @param width
+	 * @param height
+	 * @return
+	 */
 	@Override
 	public boolean canCraftInDimensions(int width, int height) {
 		return width >= this.width && height >= this.height;
 	}
 
+	/**
+	 * I think this returns the list of items in the table after a recipe is complete?
+	 * @param inventory
+	 * @return
+	 */
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(IItemHandler inventory) {
 		if (this.transformer != null) {
