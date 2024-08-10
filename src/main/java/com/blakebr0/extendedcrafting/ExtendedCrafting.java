@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 @Mod(ExtendedCrafting.MOD_ID)
 public final class ExtendedCrafting {
 	public static final String MOD_ID = "extendedcrafting";
-	public static final String NAME = "Extended Crafting: Unofficial";
+	public static final String NAME = "Extended Crafting: Expanded";
 	public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
 	public ExtendedCrafting() {
