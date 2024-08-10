@@ -21,6 +21,7 @@ public final class ModTooltips {
     public static final Tooltip TICKS = new Tooltip("tooltip.extendedcrafting.ticks");
     public static final Tooltip SECONDS = new Tooltip("tooltip.extendedcrafting.seconds");
     public static final Tooltip REQUIRES_TABLE = new Tooltip("tooltip.extendedcrafting.requires_table");
+    public static final Tooltip SHAPELESS = new Tooltip("tooltip.extendedcrafting.shapeless");
     public static final Tooltip ITEMS_REQUIRED = new Tooltip("tooltip.extendedcrafting.items_required");
     public static final Tooltip PER_ALTERNATOR = new Tooltip("tooltip.extendedcrafting.per_alternator");
     public static final Tooltip RECIPE_COUNT = new Tooltip("tooltip.extendedcrafting.recipe_count");

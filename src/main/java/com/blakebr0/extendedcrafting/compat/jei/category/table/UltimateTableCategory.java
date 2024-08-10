@@ -32,11 +32,13 @@ public class UltimateTableCategory implements IRecipeCategory<ITableRecipe> {
 
     private final IDrawable background;
     private final IDrawable icon;
+	private final IDrawable shapeless;
     private final IDrawable required;
 	
     public UltimateTableCategory(IGuiHelper helper) {
         this.background = helper.createDrawable(TEXTURE, 0, 0, 162, 195);
         this.icon = helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(ModBlocks.ULTIMATE_TABLE.get()));
+		this.shapeless = helper.createDrawable(JeiCompat.ICONS, 17, 0, 15, 15);
 		this.required = helper.createDrawable(JeiCompat.ICONS, 0, 0, 15, 15);
     }
 
@@ -69,6 +71,8 @@ public class UltimateTableCategory implements IRecipeCategory<ITableRecipe> {
 
 		var shapeless = recipe instanceof ShapelessTableRecipe;
 
+		if (shapeless) this.shapeless.draw(gfx, 306, 329);
+
 		if (recipe.hasRequiredTier())
 			this.required.draw(gfx, shapeless ? 286 : 306, 329);
 
@@ -79,7 +83,11 @@ public class UltimateTableCategory implements IRecipeCategory<ITableRecipe> {
 	public List<Component> getTooltipStrings(ITableRecipe recipe, IRecipeSlotsView slots, double mouseX, double mouseY) {
 		var shapeless = recipe instanceof ShapelessTableRecipe;
 		int sX = (shapeless ? 286 : 306) / 2, sY = 329 / 2;
+		int sX2 = 306 / 2;
 
+		if (shapeless && mouseX > sX2 - 1 && mouseX < sX2 + 8 && mouseY > sY - 1 && mouseY < sY + 8) {
+			return List.of(ModTooltips.SHAPELESS.args().color(ChatFormatting.WHITE).build());
+		}
 		if (recipe.hasRequiredTier() && mouseX > sX - 1 && mouseX < sX + 8 && mouseY > sY - 1 && mouseY < sY + 8) {
 			return List.of(ModTooltips.REQUIRES_TABLE.args(recipe.getTier()).color(ChatFormatting.WHITE).build());
 		}
