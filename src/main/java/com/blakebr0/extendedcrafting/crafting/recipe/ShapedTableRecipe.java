@@ -312,6 +312,11 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		return astring;
 	}
 
+	/**
+	 * It seems that the transformer is an optional replacement of the CraftingRemainder logic
+	 * This method allows to define it for the current recipe
+	 * @param transformer the transformer
+	 */
 	public void setTransformer(TriFunction<Integer, Integer, ItemStack, ItemStack> transformer) {
 		this.transformer = transformer;
 	}
