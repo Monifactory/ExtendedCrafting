@@ -73,9 +73,8 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * Checks if the grid matches the recipe
 	 * @param inventory The table's inventory
-	 * @return whether there is a match
+	 * @return
 	 */
 	@Override
 	public boolean matches(IItemHandler inventory) {
@@ -151,9 +150,11 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * I think this returns the list of items in the table after a recipe is complete?
-	 * @param inventory
-	 * @return
+	 * Returns a list of item stacks containing all the crafting remainders (can be empty stacks).
+	 * A crafting remainder is when an item turns into another, such as the water bucket leaving an empty bucket behind,
+	 * or a gregtech tool consuming durability.
+	 * @param inventory The inventory containing the item list
+	 * @return a list of crafting remainders
 	 */
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(IItemHandler inventory) {
@@ -197,6 +198,10 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		return ISpecialRecipe.super.getRemainingItems(inventory);
 	}
 
+	/**
+	 * Returns the table tier the recipe runs in
+	 * @return table tier
+	 */
 	@Override
 	public int getTier() {
 		if (this.tier > 0) return this.tier;
@@ -208,19 +213,36 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 				 : 5;
 	}
 
+	/**
+	 * Returns whether the recipe is tier-locked
+	 * @return whether the recipe is tier-locked
+	 */
 	@Override
 	public boolean hasRequiredTier() {
 		return this.tier > 0;
 	}
 
+	/**
+	 * Returns recipe width
+	 * @return recipe width
+	 */
 	public int getWidth() {
 		return this.width;
 	}
 
+	/**
+	 * Returns recipe height
+	 * @return recipe height
+	 */
 	public int getHeight() {
 		return this.height;
 	}
 
+	/**
+	 * Returns an ExtC table's tier by checking the amount of slots it has
+	 * @param inv the inventory being checked (in practice always an ExtC table or auto table)
+	 * @return table tier
+	 */
 	private int getTierFromGridSize(IItemHandler inv) {
 		int size = inv.getSlots();
 		return size < 10 ? 1
@@ -229,6 +251,15 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 				: size < 82 ? 4
 				: 5;
 	}
+
+	/**
+	 *
+	 * @param inventory The table the check happens in.
+	 * @param x
+	 * @param y
+	 * @param mirror Whether to check for a mirrored version of the recipe along the Y axis.
+	 * @return
+	 */
 
 	private boolean checkMatch(IItemHandler inventory, int x, int y, boolean mirror) {
 		int size = (int) Math.sqrt(inventory.getSlots());
@@ -255,6 +286,11 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		return true;
 	}
 
+	/**
+	 * Turns the JSON array into a java array of strings. Also checks validity of syntax.
+	 * @param jsonArr the json array. In practice, extracted from a recipe json file.
+	 * @return a string array made from the JsonArray
+	 */
 	private static String[] patternFromJson(JsonArray jsonArr) {
 		var astring = new String[jsonArr.size()];
 		for (int i = 0; i < astring.length; ++i) {
@@ -274,7 +310,19 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		this.transformer = transformer;
 	}
 
+	/**
+	 * Recipe serializer. Defines:
+	 * - Serializer::fromJson
+	 * - Serializer::fromNetwork
+	 * - Serializer::toNetwork
+	 */
 	public static class Serializer implements RecipeSerializer<ShapedTableRecipe> {
+		/**
+		 * Reads a JSON object and turns it into a recipe
+		 * @param recipeId The recipe ID. It is NOT part of the object.
+		 * @param json The JSON object.
+		 * @return a recipe.
+		 */
 		@Override
 		public ShapedTableRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
 			var map = ShapedRecipe.keyFromJson(GsonHelper.getAsJsonObject(json, "key"));
@@ -292,6 +340,13 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 			return new ShapedTableRecipe(recipeId, width, height, inputs, output, tier);
 		}
 
+		/**
+		 * Decodes a recipe from a byte buffer for networking purposes.
+		 * @param recipeId the recipe ID. It is NOT part of the buffer. TODO: Figure out why.
+		 * @param buffer the byte buffer received, contains width, height, inputs, output and tier.
+		 * @return a ShapedTableRecipe with the given recipeId and its contents,
+		 * reverts Serializer::toNetwork.
+		 */
 		@Override
 		public ShapedTableRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
 			int width = buffer.readVarInt();
@@ -308,6 +363,11 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 			return new ShapedTableRecipe(recipeId, width, height, inputs, output, tier);
 		}
 
+		/**
+		 * Encodes a recipe into the byte buffer for networking purposes.
+		 * @param buffer The buffer in which the recipe is exported. OUTPUT GOES HERE.
+		 * @param recipe The recipe being translated. TODO: Figure out why recipe ID not translated
+		 */
 		@Override
 		public void toNetwork(FriendlyByteBuf buffer, ShapedTableRecipe recipe) {
 			buffer.writeVarInt(recipe.width);
