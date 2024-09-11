@@ -23,6 +23,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
+/**
+ * A shaped recipe for ExtendedCrafting tables
+ */
 public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	private final ResourceLocation recipeId;
 	private final NonNullList<Ingredient> inputs;
@@ -32,9 +35,16 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	private final int tier;
 	private TriFunction<Integer, Integer, ItemStack, ItemStack> transformer;
 
-	public ShapedTableRecipe(ResourceLocation recipeId, int width, int height, NonNullList<Ingredient> inputs, ItemStack output) {
-		this(recipeId, width, height, inputs, output, 0);
-	}
+	/**
+	 * Using the constructor as a list of what parameters do because lol.
+	 * @param recipeId Recipe ID. Need I say more?
+	 * @param width Width of the recipe in a grid. Important for layout extrapolation.
+	 * @param height Height of the recipe in a grid. Important for layout extrapolation.
+	 * @param inputs A one-dimensional list of inputs. 2d layout extrapolated from context.
+	 * @param output Recipe output. Need I say more?
+	 * @param tier If this value is NOT 0, then the recipe is locked to a specific table tier.
+	 * Transformer defined in ShapedTableRecipe::setTransformer
+	 */
 
 	public ShapedTableRecipe(ResourceLocation recipeId, int width, int height, NonNullList<Ingredient> inputs, ItemStack output, int tier) {
 		this.recipeId = recipeId;
@@ -43,6 +53,9 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		this.width = width;
 		this.height = height;
 		this.tier = tier;
+	}
+	public ShapedTableRecipe(ResourceLocation recipeId, int width, int height, NonNullList<Ingredient> inputs, ItemStack output) {
+		this(recipeId, width, height, inputs, output, 0);
 	}
 
 	/**
