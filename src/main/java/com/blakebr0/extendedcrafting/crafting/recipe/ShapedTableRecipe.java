@@ -37,13 +37,13 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Using the constructor as a list of what parameters do because lol.
-	 * @param recipeId Recipe ID. Need I say more?
+	 * Transformer defined in ShapedTableRecipe::setTransformer
+	 * @param recipeId Recipe ID (resource location)
 	 * @param width Width of the recipe in a grid. Important for layout extrapolation.
 	 * @param height Height of the recipe in a grid. Important for layout extrapolation.
-	 * @param inputs A one-dimensional list of inputs. 2d layout extrapolated from context.
-	 * @param output Recipe output. Need I say more?
-	 * @param tier If this value is NOT 0, then the recipe is locked to a specific table tier.
-	 * Transformer defined in ShapedTableRecipe::setTransformer
+	 * @param inputs One-dimensional list of inputs. 2D layout extrapolated from context.
+	 * @param output Recipe output
+	 * @param tier Optional. If specified, the recipe is locked to the specific table tier.
 	 */
 
 	public ShapedTableRecipe(ResourceLocation recipeId, int width, int height, NonNullList<Ingredient> inputs, ItemStack output, int tier) {
@@ -59,9 +59,9 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * Returns the recipe's output
-	 * @param access No idea what that does
-	 * @return the output item
+	 * Returns the recipe's output.
+	 * @param access Provides access to game registries (items, blocks, etc.)
+	 * @return Output item
 	 */
 	@Override
 	public ItemStack getResultItem(RegistryAccess access) {
@@ -69,8 +69,8 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * I think this method and the next one make a copy of the recipe output as an ItemStack.
-	 * Not really important here.
+	 * Assembles the recipe.
+	 * Used to form the output if inputs are found in a container.
 	 * @param inventory The inventory containing the inputs
 	 * @param access No idea what that does
 	 * @return A copy of the recipe output as an ItemStack
@@ -91,7 +91,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	 * for each possible offset of the pattern.
 	 * Very slow, but possibly impossible to optimize.
 	 * @param inventory The table's inventory
-	 * @return whether the contents of the table match this recipe
+	 * @return Whether the contents of the table match this recipe
 	 */
 	@Override
 	public boolean matches(IItemHandler inventory) {
@@ -121,7 +121,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns a list of inputs
-	 * @return a list of inputs
+	 * @return All inputs for the recipe
 	 */
 	@Override
 	public NonNullList<Ingredient> getIngredients() {
@@ -130,7 +130,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns recipe ID
-	 * @return recipe ID
+	 * @return Recipe ID
 	 */
 	@Override
 	public ResourceLocation getId() {
@@ -139,7 +139,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns the type's recipe serializer
-	 * @return serializer
+	 * @return Serializer
 	 */
 	@Override
 	public RecipeSerializer<?> getSerializer() {
@@ -148,7 +148,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns the TABLE recipe type
-	 * @return the type
+	 * @return Recipe type
 	 */
 	@Override
 	public RecipeType<?> getType() {
@@ -169,9 +169,9 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	/**
 	 * Returns a list of item stacks containing all the crafting remainders (can be empty stacks).
 	 * A crafting remainder is when an item turns into another, such as the water bucket leaving an empty bucket behind,
-	 * or a gregtech tool consuming durability.
-	 * @param inventory The inventory containing the item list
-	 * @return a list of crafting remainders
+	 * or a GregTech tool consuming durability.
+	 * @param inventory Inventory containing the item stacks
+	 * @return List of crafting remainders
 	 */
 	@Override
 	public NonNullList<ItemStack> getRemainingItems(IItemHandler inventory) {
@@ -217,7 +217,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns the table tier the recipe runs in
-	 * @return table tier
+	 * @return Table tier
 	 */
 	@Override
 	public int getTier() {
@@ -232,7 +232,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns whether the recipe is tier-locked
-	 * @return whether the recipe is tier-locked
+	 * @return Whether the recipe is tier-locked
 	 */
 	@Override
 	public boolean hasRequiredTier() {
@@ -241,7 +241,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns recipe width
-	 * @return recipe width
+	 * @return Recipe width
 	 */
 	public int getWidth() {
 		return this.width;
@@ -249,7 +249,7 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns recipe height
-	 * @return recipe height
+	 * @return Recipe height
 	 */
 	public int getHeight() {
 		return this.height;
@@ -257,8 +257,8 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 
 	/**
 	 * Returns an ExtC table's tier by checking the amount of slots it has
-	 * @param inv the inventory being checked (in practice always an ExtC table or auto table)
-	 * @return table tier
+	 * @param inv Inventory being checked (in practice, always an ExtC table or auto table)
+	 * @return Table tier
 	 */
 	private int getTierFromGridSize(IItemHandler inv) {
 		int size = inv.getSlots();
@@ -274,10 +274,10 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	 * (starting from the bottom FSR)
 	 * Seems pasted from vanilla's ShapedRecipe class
 	 * @param inventory The table the check happens in.
-	 * @param x The X offset
-	 * @param y The Y offset
-	 * @param mirror Whether to check for a mirrored version of the recipe along the Y axis.
-	 * @return whether the grid matches the recipe
+	 * @param x X offset
+	 * @param y Y offset
+	 * @param mirror Whether to check for a mirrored version of the recipe along the Y axis
+	 * @return Whether the grid matches the recipe
 	 */
 
 	private boolean checkMatch(IItemHandler inventory, int x, int y, boolean mirror) {
@@ -306,9 +306,9 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * Turns the JSON array into a java array of strings. Also checks validity of syntax.
-	 * @param jsonArr the json array. In practice, extracted from a recipe json file.
-	 * @return a string array made from the JsonArray
+	 * Turns the JSON array into a Java array of strings. Also checks validity of syntax.
+	 * @param jsonArr Specified JSON array. In practice, extracted from a recipe json file
+	 * @return String array made from the JsonArray
 	 */
 	private static String[] patternFromJson(JsonArray jsonArr) {
 		var astring = new String[jsonArr.size()];
