@@ -73,8 +73,12 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
+	 * Returns whether the contents of the table match this recipe,
+	 * by comparing the contents of the table with the recipe
+	 * for each possible offset of the pattern.
+	 * Very slow, but possibly impossible to optimize.
 	 * @param inventory The table's inventory
-	 * @return
+	 * @return whether the contents of the table match this recipe
 	 */
 	@Override
 	public boolean matches(IItemHandler inventory) {
@@ -253,12 +257,14 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 *
+	 * Checks whether the grid matches the recipe with a specific offset
+	 * (starting from the bottom FSR)
+	 * Seems pasted from vanilla's ShapedRecipe class
 	 * @param inventory The table the check happens in.
-	 * @param x
-	 * @param y
+	 * @param x The X offset
+	 * @param y The Y offset
 	 * @param mirror Whether to check for a mirrored version of the recipe along the Y axis.
-	 * @return
+	 * @return whether the grid matches the recipe
 	 */
 
 	private boolean checkMatch(IItemHandler inventory, int x, int y, boolean mirror) {
