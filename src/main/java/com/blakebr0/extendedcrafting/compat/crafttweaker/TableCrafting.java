@@ -46,10 +46,10 @@ public final class TableCrafting implements IRecipeManager<ITableRecipe> {
 	public static void addShaped(String name, int tier, IItemStack output, IIngredient[][] inputs) {
 		var id = CraftTweakerConstants.rl(INSTANCE.fixRecipeName(name));
 
-		if (tier > 4 || tier < 0) {
+		if (tier > 5 || tier < 0) {
 			tier = 0;
 
-			CraftTweakerAPI.getLogger(ExtendedCrafting.MOD_ID).error("Unable to assign a tier to the Table Recipe for stack " + output.getCommandString() + ". Tier cannot be greater than 4 or less than 0.");
+			CraftTweakerAPI.getLogger(ExtendedCrafting.MOD_ID).error("Unable to assign a tier to the Table Recipe for stack " + output.getCommandString() + ". Tier cannot be greater than 5 or less than 0.");
 		}
 
 		int height = inputs.length;
@@ -88,10 +88,10 @@ public final class TableCrafting implements IRecipeManager<ITableRecipe> {
 	public static void addShapeless(String name, int tier, IItemStack output, IIngredient[] inputs) {
 		var id = CraftTweakerConstants.rl(INSTANCE.fixRecipeName(name));
 
-		if (tier > 4 || tier < 0) {
+		if (tier > 5 || tier < 0) {
 			tier = 0;
 
-			CraftTweakerAPI.getLogger(ExtendedCrafting.MOD_ID).error("Unable to assign a tier to the Table Recipe for stack " + output.getCommandString() + ". Tier cannot be greater than 4 or less than 0.");
+			CraftTweakerAPI.getLogger(ExtendedCrafting.MOD_ID).error("Unable to assign a tier to the Table Recipe for stack " + output.getCommandString() + ". Tier cannot be greater than 5 or less than 0.");
 		}
 
 		var recipe = new ShapelessTableRecipe(id, toIngredientsList(inputs), output.getInternal(), tier);
