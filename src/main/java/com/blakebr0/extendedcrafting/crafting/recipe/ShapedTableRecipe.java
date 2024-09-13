@@ -69,10 +69,57 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
+	 * Returns a list of inputs
+	 * @return All inputs for the recipe
+	 */
+	@Override
+	public NonNullList<Ingredient> getIngredients() {
+		return this.inputs;
+	}
+
+	/**
+	 * Returns recipe ID
+	 * @return Recipe ID
+	 */
+	@Override
+	public ResourceLocation getId() {
+		return this.recipeId;
+	}
+
+	/**
+	 * Returns the type's recipe serializer
+	 * @return Serializer
+	 */
+	@Override
+	public RecipeSerializer<?> getSerializer() {
+		return ModRecipeSerializers.SHAPED_TABLE.get();
+	}
+
+	/**
+	 * Returns the TABLE recipe type
+	 * @return Recipe type
+	 */
+	@Override
+	public RecipeType<?> getType() {
+		return ModRecipeTypes.TABLE.get();
+	}
+
+	/**
+	 * Checks whether the recipe fits within a certain grid
+	 * @param width Width of the grid
+	 * @param height Height of the grid
+	 * @return Whether the recipe fits
+	 */
+	@Override
+	public boolean canCraftInDimensions(int width, int height) {
+		return width >= this.width && height >= this.height;
+	}
+
+	/**
 	 * Assembles the recipe.
 	 * Used to form the output if inputs are found in a container.
 	 * @param inventory The inventory containing the inputs
-	 * @param access No idea what that does
+	 * @param access Provides access to game registries (items, blocks, etc.)
 	 * @return A copy of the recipe output as an ItemStack
 	 */
 	@Override
@@ -120,50 +167,48 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * Returns a list of inputs
-	 * @return All inputs for the recipe
+	 * Checks whether the grid matches the recipe with a specific offset
+	 * (starting from the bottom FSR)
+	 * Seems pasted from vanilla's ShapedRecipe class
+	 * @param inventory The table the check happens in.
+	 * @param x X offset
+	 * @param y Y offset
+	 * @param mirror Whether to check for a mirrored version of the recipe along the Y axis
+	 * @return Whether the grid matches the recipe
 	 */
-	@Override
-	public NonNullList<Ingredient> getIngredients() {
-		return this.inputs;
+
+	private boolean checkMatch(IItemHandler inventory, int x, int y, boolean mirror) {
+		int size = (int) Math.sqrt(inventory.getSlots());
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				int k = i - x;
+				int l = j - y;
+				var ingredient = Ingredient.EMPTY;
+
+				if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
+					if (mirror) {
+						ingredient = this.inputs.get(this.width - k - 1 + l * this.width);
+					} else {
+						ingredient = this.inputs.get(k + l * this.width);
+					}
+				}
+
+				if (!ingredient.test(inventory.getStackInSlot(i + j * size))) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	/**
-	 * Returns recipe ID
-	 * @return Recipe ID
+	 * It seems that the transformer is an optional replacement of the CraftingRemainder logic
+	 * This method allows to define it for the current recipe
+	 * @param transformer the transformer
 	 */
-	@Override
-	public ResourceLocation getId() {
-		return this.recipeId;
-	}
-
-	/**
-	 * Returns the type's recipe serializer
-	 * @return Serializer
-	 */
-	@Override
-	public RecipeSerializer<?> getSerializer() {
-		return ModRecipeSerializers.SHAPED_TABLE.get();
-	}
-
-	/**
-	 * Returns the TABLE recipe type
-	 * @return Recipe type
-	 */
-	@Override
-	public RecipeType<?> getType() {
-		return ModRecipeTypes.TABLE.get();
-	}
-
-	/**
-	 * Checks whether the recipe fits within a certain frame
-	 * @param width
-	 * @param height
-	 * @return
-	 */
-	@Override
-	public boolean canCraftInDimensions(int width, int height) {
-		return width >= this.width && height >= this.height;
+	public void setTransformer(TriFunction<Integer, Integer, ItemStack, ItemStack> transformer) {
+		this.transformer = transformer;
 	}
 
 	/**
@@ -231,6 +276,20 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
+	 * Returns an ExtC table's tier by checking the amount of slots it has
+	 * @param inv Inventory being checked (in practice, always an ExtC table or auto table)
+	 * @return Table tier
+	 */
+	private int getTierFromGridSize(IItemHandler inv) {
+		int size = inv.getSlots();
+		return size < 10 ? 1
+				: size < 26 ? 2
+				: size < 50 ? 3
+				: size < 82 ? 4
+				: 5;
+	}
+
+	/**
 	 * Returns whether the recipe is tier-locked
 	 * @return Whether the recipe is tier-locked
 	 */
@@ -256,56 +315,6 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 	}
 
 	/**
-	 * Returns an ExtC table's tier by checking the amount of slots it has
-	 * @param inv Inventory being checked (in practice, always an ExtC table or auto table)
-	 * @return Table tier
-	 */
-	private int getTierFromGridSize(IItemHandler inv) {
-		int size = inv.getSlots();
-		return size < 10 ? 1
-				: size < 26 ? 2
-				: size < 50 ? 3
-				: size < 82 ? 4
-				: 5;
-	}
-
-	/**
-	 * Checks whether the grid matches the recipe with a specific offset
-	 * (starting from the bottom FSR)
-	 * Seems pasted from vanilla's ShapedRecipe class
-	 * @param inventory The table the check happens in.
-	 * @param x X offset
-	 * @param y Y offset
-	 * @param mirror Whether to check for a mirrored version of the recipe along the Y axis
-	 * @return Whether the grid matches the recipe
-	 */
-
-	private boolean checkMatch(IItemHandler inventory, int x, int y, boolean mirror) {
-		int size = (int) Math.sqrt(inventory.getSlots());
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				int k = i - x;
-				int l = j - y;
-				var ingredient = Ingredient.EMPTY;
-
-				if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
-					if (mirror) {
-						ingredient = this.inputs.get(this.width - k - 1 + l * this.width);
-					} else {
-						ingredient = this.inputs.get(k + l * this.width);
-					}
-				}
-
-				if (!ingredient.test(inventory.getStackInSlot(i + j * size))) {
-					return false;
-				}
-			}
-		}
-
-		return true;
-	}
-
-	/**
 	 * Turns the JSON array into a Java array of strings. Also checks validity of syntax.
 	 * @param jsonArr Specified JSON array. In practice, extracted from a recipe json file
 	 * @return String array made from the JsonArray
@@ -323,15 +332,6 @@ public class ShapedTableRecipe implements ISpecialRecipe, ITableRecipe {
 		}
 
 		return astring;
-	}
-
-	/**
-	 * It seems that the transformer is an optional replacement of the CraftingRemainder logic
-	 * This method allows to define it for the current recipe
-	 * @param transformer the transformer
-	 */
-	public void setTransformer(TriFunction<Integer, Integer, ItemStack, ItemStack> transformer) {
-		this.transformer = transformer;
 	}
 
 	/**
